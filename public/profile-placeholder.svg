@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" fill="none">
+  <rect width="400" height="500" fill="#0D1530"/>
+
+  <!-- Dot grid pattern -->
+  <pattern id="dots" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+    <circle cx="1" cy="1" r="0.7" fill="#00D4FF" fill-opacity="0.10"/>
+  </pattern>
+  <rect width="400" height="500" fill="url(#dots)"/>
+
+  <!-- Center glow -->
+  <radialGradient id="glow" cx="50%" cy="43%" r="42%">
+    <stop offset="0%" stop-color="#00D4FF" stop-opacity="0.09"/>
+    <stop offset="100%" stop-color="#00D4FF" stop-opacity="0"/>
+  </radialGradient>
+  <rect width="400" height="500" fill="url(#glow)"/>
+
+  <!-- Outer profile ring -->
+  <circle cx="200" cy="175" r="82" fill="rgba(0,212,255,0.05)" stroke="rgba(0,212,255,0.18)" stroke-width="1"/>
+  <!-- Head -->
+  <circle cx="200" cy="157" r="46" fill="rgba(0,212,255,0.10)"/>
+  <!-- Shoulders -->
+  <ellipse cx="200" cy="260" rx="72" ry="44" fill="rgba(0,212,255,0.08)"/>
+
+  <!-- Scan lines -->
+  <line x1="100" y1="175" x2="130" y2="175" stroke="#00D4FF" stroke-width="0.6" stroke-opacity="0.35"/>
+  <line x1="270" y1="175" x2="300" y2="175" stroke="#00D4FF" stroke-width="0.6" stroke-opacity="0.35"/>
+  <line x1="200" y1="80"  x2="200" y2="100" stroke="#00D4FF" stroke-width="0.6" stroke-opacity="0.35"/>
+
+  <!-- Corner brackets -->
+  <path d="M22 22 L56 22 M22 22 L22 56" stroke="#00D4FF" stroke-width="1.5" stroke-opacity="0.38" stroke-linecap="round"/>
+  <path d="M378 22 L344 22 M378 22 L378 56" stroke="#00D4FF" stroke-width="1.5" stroke-opacity="0.38" stroke-linecap="round"/>
+  <path d="M22 478 L56 478 M22 478 L22 444" stroke="#00D4FF" stroke-width="1.5" stroke-opacity="0.38" stroke-linecap="round"/>
+  <path d="M378 478 L344 478 M378 478 L378 444" stroke="#00D4FF" stroke-width="1.5" stroke-opacity="0.38" stroke-linecap="round"/>
+
+  <!-- Divider -->
+  <line x1="80" y1="350" x2="320" y2="350" stroke="#00D4FF" stroke-width="0.6" stroke-opacity="0.20"/>
+
+  <!-- Main label -->
+  <text x="200" y="385" text-anchor="middle"
+    font-family="'Courier New',monospace" font-size="13" font-weight="bold"
+    fill="#00D4FF" fill-opacity="0.75" letter-spacing="5">FOTO DE IRVIN</text>
+
+  <!-- Sub label -->
+  <text x="200" y="410" text-anchor="middle"
+    font-family="'Courier New',monospace" font-size="9"
+    fill="#00D4FF" fill-opacity="0.28" letter-spacing="3">REEMPLAZAR CON FOTO REAL</text>
+</svg>

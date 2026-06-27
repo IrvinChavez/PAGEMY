@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Code2, Zap, Target } from 'lucide-react'
 
+// ── Animated counter ──────────────────────────────────────────────────────────
 function Counter({ to, suffix = '', duration = 1800 }) {
   const [count, setCount] = useState(0)
   const ref = useRef(null)
@@ -22,11 +23,12 @@ function Counter({ to, suffix = '', duration = 1800 }) {
   return <span ref={ref} className="tabular-nums">{count}{suffix}</span>
 }
 
+// ── Data ──────────────────────────────────────────────────────────────────────
 const STATS = [
-  { value: 2, suffix: '+', label: 'Años construyendo' },
-  { value: 12, suffix: '+', label: 'Proyectos entregados' },
-  { value: 20, suffix: '+', label: 'Tecnologías' },
-  { value: 100, suffix: '%', label: 'Enfoque en el cliente' },
+  { value: 2,   suffix: '+', label: 'Años construyendo' },
+  { value: 12,  suffix: '+', label: 'Proyectos' },
+  { value: 20,  suffix: '+', label: 'Tecnologías' },
+  { value: 100, suffix: '%', label: 'Enfoque cliente' },
 ]
 
 const PILLARS = [
@@ -47,11 +49,69 @@ const PILLARS = [
   },
 ]
 
+// ── Animaciones ───────────────────────────────────────────────────────────────
 const reveal = {
   hidden: { opacity: 0, y: 32 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
 }
 
+// ── CAMBIO 2: Foto de perfil con borde glow + glassmorphism ──────────────────
+// Para usar foto real: reemplaza /profile-placeholder.svg con la ruta de tu imagen
+// Ejemplo: src="/irvin.jpg" o src="/irvin.webp"
+function ProfilePhoto() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+      className="relative"
+    >
+      {/* Glow border animado — reutiliza gradientShift de index.css */}
+      <div
+        className="absolute -inset-px rounded-2xl opacity-60"
+        style={{
+          background: 'linear-gradient(135deg, #00D4FF, #A855F7, #00D4FF)',
+          backgroundSize: '200% 200%',
+          animation: 'gradientShift 4s linear infinite',
+        }}
+      />
+
+      {/* Card glassmorphism */}
+      <motion.div
+        whileHover={{ scale: 1.025 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        className="relative rounded-2xl overflow-hidden"
+        style={{
+          background: 'rgba(13,21,48,0.92)',
+          boxShadow: '0 0 40px rgba(0,212,255,0.1), 0 20px 60px rgba(0,0,0,0.5)',
+        }}
+      >
+        {/* ── Cambia esta imagen cuando tengas tu foto ── */}
+        <img
+          src="/FP.jpeg"
+          alt="Foto de Irvin Chavez"
+          className="w-full object-cover"
+          style={{ aspectRatio: '4 / 5' }}
+        />
+
+        {/* Overlay inferior con nombre + disponibilidad */}
+        <div
+          className="absolute bottom-0 inset-x-0 px-5 py-4"
+          style={{ background: 'linear-gradient(0deg, rgba(5,8,22,0.97) 0%, transparent 100%)' }}
+        >
+          <p className="text-white font-bold text-sm tracking-wide">Irvin Chavez</p>
+          <div className="flex items-center gap-2 mt-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#3ECF8E] animate-pulse" />
+            <p className="text-[11px] text-slate-400">Disponible · Chihuahua, México</p>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  )
+}
+
+// ── Sección ───────────────────────────────────────────────────────────────────
 export default function About() {
   return (
     <section id="about" className="py-32 bg-[#050816] relative overflow-hidden">
@@ -61,6 +121,7 @@ export default function About() {
       />
 
       <div className="max-w-7xl mx-auto px-6">
+        {/* Label */}
         <motion.div
           variants={reveal}
           initial="hidden"
@@ -74,7 +135,10 @@ export default function About() {
           </span>
         </motion.div>
 
+        {/* Grid principal */}
         <div className="grid lg:grid-cols-2 gap-16 items-start">
+
+          {/* ── Columna izquierda: texto + pilares ── */}
           <div>
             <motion.h2
               variants={reveal}
@@ -88,6 +152,7 @@ export default function About() {
               <span className="gradient-text">detrás del código.</span>
             </motion.h2>
 
+            {/* CAMBIO 1: Texto más humano y personal */}
             <motion.div
               variants={reveal}
               initial="hidden"
@@ -96,25 +161,26 @@ export default function About() {
               className="space-y-5 text-slate-400 text-[16px] leading-relaxed"
             >
               <p>
-                Soy <strong className="text-white font-semibold">Irvin Chavez</strong>, desarrollador de software
-                y constructor de IA apasionado por crear productos digitales que resuelven problemas reales de negocio.
-                Empecé con curiosidad y lo convertí en oficio — construyendo desde landing pages hasta aplicaciones
-                full-stack potenciadas con inteligencia artificial.
+                Soy <strong className="text-white font-semibold">Irvin</strong>, desarrollador de software
+                de <strong className="text-white font-semibold">Chihuahua, México</strong>.
               </p>
               <p>
-                Me especializo en la intersección del{' '}
-                <strong className="text-white font-semibold">desarrollo web moderno</strong>{' '}
-                y la <strong className="text-white font-semibold">automatización inteligente</strong>. Ya sea una
-                API REST escalable, un frontend pixel-perfect o un sistema OCR que lee tickets — construyo cosas
-                que funcionan en producción.
+                Comencé programando por curiosidad y con el tiempo descubrí que me apasiona crear
+                soluciones que ayuden a{' '}
+                <strong className="text-white font-semibold">personas reales</strong> a resolver{' '}
+                <strong className="text-white font-semibold">problemas reales</strong>.
               </p>
               <p>
-                Mi objetivo es simple: crear tecnología que genere valor real. Cada proyecto que tomo lo trato
-                como si fuera mi propio negocio — con cuidado en la arquitectura, el rendimiento y la
-                mantenibilidad a largo plazo.
+                Me especializo en{' '}
+                <strong className="text-white font-semibold">desarrollo web</strong>,{' '}
+                <strong className="text-white font-semibold">automatización</strong> e{' '}
+                <strong className="text-white font-semibold">inteligencia artificial</strong>.
+                Disfruto construir productos modernos, rápidos y útiles que combinen diseño,
+                tecnología y funcionalidad.
               </p>
             </motion.div>
 
+            {/* Pilares de valor */}
             <motion.div
               initial="hidden"
               whileInView="show"
@@ -140,33 +206,39 @@ export default function About() {
             </motion.div>
           </div>
 
+          {/* ── Columna derecha: foto + stats + quote ── */}
           <motion.div
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
-            variants={{ show: { transition: { staggerChildren: 0.1, delayChildren: 0.15 } } }}
-            className="lg:pt-14"
+            variants={{ show: { transition: { staggerChildren: 0.1, delayChildren: 0.1 } } }}
+            className="lg:pt-6 space-y-5"
           >
-            <div className="grid grid-cols-2 gap-4">
+            {/* CAMBIO 2: Foto de perfil */}
+            <ProfilePhoto />
+
+            {/* Stats compactas 2×2 */}
+            <div className="grid grid-cols-2 gap-3">
               {STATS.map(({ value, suffix, label }) => (
                 <motion.div
                   key={label}
                   variants={reveal}
-                  className="glass-card rounded-2xl p-7 hover:border-[#00D4FF]/20 transition-all duration-300"
+                  className="glass-card rounded-xl p-5 hover:border-[#00D4FF]/20 transition-all duration-300"
                 >
-                  <p className="text-4xl font-black gradient-text mb-2">
+                  <p className="text-3xl font-black gradient-text mb-1">
                     <Counter to={value} suffix={suffix} />
                   </p>
-                  <p className="text-sm text-slate-500 font-medium">{label}</p>
+                  <p className="text-xs text-slate-500 font-medium leading-snug">{label}</p>
                 </motion.div>
               ))}
             </div>
 
+            {/* Quote */}
             <motion.div
               variants={reveal}
-              className="mt-4 glass-card rounded-2xl p-7 border-l-2 border-[#00D4FF]/50"
+              className="glass-card rounded-xl p-6 border-l-2 border-[#00D4FF]/50"
             >
-              <p className="text-slate-300 text-[15px] leading-relaxed italic">
+              <p className="text-slate-300 text-[14px] leading-relaxed italic">
                 &ldquo;No solo escribo código. Construyo soluciones que hacen que los negocios funcionen de forma más inteligente.&rdquo;
               </p>
               <p className="mt-3 text-xs text-slate-600 font-semibold tracking-widest uppercase">

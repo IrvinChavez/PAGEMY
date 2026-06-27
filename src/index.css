@@ -106,3 +106,15 @@
 .orb-1 { animation: orbMove1 18s ease-in-out infinite; }
 .orb-2 { animation: orbMove2 22s ease-in-out infinite; }
 .orb-3 { animation: orbMove3 28s ease-in-out infinite; }
+
+@keyframes vagosScroll {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+.vagos-scroll-track {
+  animation: vagosScroll 14s linear infinite;
+}
+.vagos-scroll-track:hover {
+  animation-play-state: paused;
+}

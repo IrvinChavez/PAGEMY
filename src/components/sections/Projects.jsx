@@ -1,77 +1,195 @@
 import { motion } from 'framer-motion'
-import { Clock, ExternalLink, ShoppingBag } from 'lucide-react'
+import { Clock, ExternalLink, Github } from 'lucide-react'
 
 const reveal = {
   hidden: { opacity: 0, y: 32 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] } },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] } },
 }
 
-function VagosMockup() {
-  const products = [
-    { name: 'Oversized Tee', price: '$349', color: '#1a1a2e' },
-    { name: 'Cargo Pants', price: '$590', color: '#16213e' },
-    { name: 'Hoodie', price: '$720', color: '#0f3460' },
-    { name: 'Shorts', price: '$280', color: '#1a1a2e' },
-  ]
+// ── Corredor auto-scroll que recrea la página real de Vagos Clothes ───────────
+// iframe no es posible (X-Frame-Options: DENY en su netlify.toml),
+// por lo que recreamos el diseño como JSX y lo animamos con CSS scroll infinito.
+const PRODUCTS = [
+  { name: 'Oversized Tee', price: '$349' },
+  { name: 'Cargo Pants',   price: '$590' },
+  { name: 'Hoodie',        price: '$720' },
+  { name: 'Shorts',        price: '$280' },
+  { name: 'Bucket Hat',    price: '$180' },
+  { name: 'Wide Leg',      price: '$650' },
+]
+
+function VagosPageSlice() {
   return (
-    <div className="relative">
-      <div
-        className="absolute inset-0 rounded-3xl blur-3xl opacity-25"
-        style={{ background: 'linear-gradient(135deg, #E34F26, #3ECF8E)' }}
-      />
-      <div
-        className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl"
-        style={{ background: '#0D1117' }}
-      >
-        <div
-          className="flex items-center gap-2 px-4 py-3 border-b border-white/[0.07]"
-          style={{ background: '#090D13' }}
-        >
-          <span className="w-3 h-3 rounded-full bg-[#FF5F57]" />
-          <span className="w-3 h-3 rounded-full bg-[#FFBD2E]" />
-          <span className="w-3 h-3 rounded-full bg-[#28CA41]" />
-          <div className="ml-3 flex-1 bg-white/[0.05] rounded-md px-3 py-1 text-[10px] text-slate-600 font-mono">
-            vagosclothes.netlify.app
-          </div>
+    <div style={{ userSelect: 'none', pointerEvents: 'none', background: '#080808' }}>
+
+      {/* ── Navbar ── */}
+      <div style={{
+        background: '#080808',
+        borderBottom: '1px solid rgba(255,255,255,0.08)',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '9px 14px',
+        gap: 8,
+      }}>
+        <span style={{ fontSize: 9, fontWeight: 900, color: '#fff', letterSpacing: '0.06em', whiteSpace: 'nowrap', flexShrink: 0 }}>
+          VAGOS <span style={{ color: '#CC0000' }}>·</span> CLOTHES
+        </span>
+        <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+          {['INICIO','TIENDA','ENTREGAS','CONTACTO'].map(l => (
+            <span key={l} style={{ fontSize: 6, color: 'rgba(255,255,255,0.35)', fontWeight: 700, letterSpacing: '0.1em', whiteSpace: 'nowrap' }}>{l}</span>
+          ))}
         </div>
-        <div className="p-4 space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <ShoppingBag size={12} className="text-[#3ECF8E]" />
-              <span className="text-[11px] font-bold text-white tracking-widest uppercase">Vagos Clothes</span>
+        <span style={{
+          fontSize: 6, fontWeight: 700, color: '#CC0000',
+          border: '1px solid #CC0000', padding: '2px 6px', borderRadius: 2,
+          letterSpacing: '0.05em', whiteSpace: 'nowrap', flexShrink: 0,
+        }}>UNIRSE – 15% OFF</span>
+      </div>
+
+      {/* ── Hero (split: negro izquierda / crimson derecha) ── */}
+      <div style={{ display: 'flex', minHeight: 200 }}>
+        {/* Lado izquierdo */}
+        <div style={{
+          flex: '0 0 56%', background: '#080808', overflow: 'hidden',
+          padding: '16px 14px 16px', display: 'flex', flexDirection: 'column', justifyContent: 'center',
+        }}>
+          {/* Location label — separado del navbar con padding */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 10 }}>
+            <div style={{ width: 14, height: 1, background: '#CC0000', flexShrink: 0 }} />
+            <span style={{ fontSize: 5, color: '#CC0000', fontWeight: 700, letterSpacing: '0.2em', whiteSpace: 'nowrap' }}>CHIHUAHUA, MEXICO</span>
+          </div>
+
+          {/* Hero text — 34px para que "REGLAS" no desborde */}
+          <div style={{ marginBottom: 12 }}>
+            <div style={{ position: 'relative', display: 'inline-block', lineHeight: 1 }}>
+              <span style={{ fontSize: 34, fontWeight: 900, color: '#fff', letterSpacing: '-0.01em', display: 'block', lineHeight: 1 }}>SIN</span>
+              <div style={{
+                position: 'absolute', top: '52%', left: 0, width: '65%', height: 2.5,
+                background: 'rgba(0,220,255,0.6)', borderRadius: 1,
+              }} />
             </div>
-            <span className="text-[9px] text-slate-600 uppercase tracking-wider">Colección 2025</span>
+            <span style={{ fontSize: 34, fontWeight: 900, color: '#fff', letterSpacing: '-0.01em', display: 'block', lineHeight: 1 }}>REGLAS</span>
+            <span style={{ fontSize: 34, fontWeight: 900, color: '#CC0000', letterSpacing: '-0.01em', display: 'block', lineHeight: 1 }}>SIN</span>
+            <span style={{
+              fontSize: 34, fontWeight: 900, color: 'transparent', letterSpacing: '-0.01em', display: 'block', lineHeight: 1,
+              WebkitTextStroke: '1.5px #fff',
+            }}>LÍMITES</span>
           </div>
-          <div className="grid grid-cols-2 gap-2">
-            {products.map((p) => (
-              <div
-                key={p.name}
-                className="rounded-lg overflow-hidden"
-                style={{ background: p.color, border: '1px solid rgba(255,255,255,0.06)' }}
-              >
-                <div className="h-16 flex items-center justify-center opacity-30">
-                  <ShoppingBag size={22} className="text-white" />
-                </div>
-                <div className="px-2 pb-2">
-                  <p className="text-[9px] text-slate-400 font-medium">{p.name}</p>
-                  <p className="text-[10px] text-[#3ECF8E] font-bold">{p.price}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div
-            className="flex items-center justify-between rounded-lg px-3 py-2"
-            style={{ background: 'rgba(62,207,142,0.08)', border: '1px solid rgba(62,207,142,0.15)' }}
-          >
-            <span className="text-[10px] text-slate-400">Envío gratis en pedidos +$800</span>
-            <span className="text-[10px] font-bold text-[#3ECF8E]">Ver más →</span>
+
+          {/* Tagline */}
+          <p style={{
+            fontSize: 6.5, color: 'rgba(255,255,255,0.38)', lineHeight: 1.55,
+            borderLeft: '2px solid rgba(255,255,255,0.12)', paddingLeft: 7,
+            maxWidth: 170, marginBottom: 10,
+          }}>
+            No somos una marca. Somos una actitud.<br />
+            Ropa streetwear para los que no le piden permiso a nadie.
+          </p>
+
+          {/* Botones */}
+          <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
+            <span style={{
+              fontSize: 6.5, fontWeight: 700, color: '#fff',
+              background: '#CC0000', padding: '4px 10px', borderRadius: 2, letterSpacing: '0.03em',
+              whiteSpace: 'nowrap',
+            }}>Comprar ahora</span>
+            <span style={{
+              fontSize: 6.5, fontWeight: 700, color: '#fff',
+              border: '1px solid rgba(62,207,142,0.5)', padding: '4px 10px', borderRadius: 2,
+              letterSpacing: '0.03em', whiteSpace: 'nowrap',
+            }}>❤ Regístrate – 15% OFF</span>
           </div>
         </div>
+
+        {/* Lado derecho: degradado crimson */}
+        <div style={{
+          flex: 1,
+          background: 'radial-gradient(ellipse at 40% 40%, #3d0000 0%, #1c0000 45%, #0a0000 100%)',
+        }} />
+      </div>
+
+      {/* ── Tienda (grid de productos) ── */}
+      <div style={{ background: '#0d0d0d', padding: '14px 14px 20px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+        <div style={{ fontSize: 6.5, color: 'rgba(255,255,255,0.22)', letterSpacing: '0.2em', fontWeight: 700, marginBottom: 10 }}>
+          — TIENDA —
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}>
+          {PRODUCTS.map(p => (
+            <div key={p.name} style={{
+              background: '#141414',
+              border: '1px solid rgba(255,255,255,0.05)',
+              borderRadius: 4, padding: '12px 8px 7px',
+              aspectRatio: '1',
+              display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
+            }}>
+              <div style={{ fontSize: 6, color: 'rgba(255,255,255,0.3)', marginBottom: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.name}</div>
+              <div style={{ fontSize: 7.5, color: '#CC0000', fontWeight: 700 }}>{p.price}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Separador limpio entre iteraciones del loop */}
+      <div style={{ background: '#080808', borderTop: '1px solid rgba(204,0,0,0.12)', height: 20 }} />
+    </div>
+  )
+}
+
+function VagosScrollDemo() {
+  return (
+    <div style={{
+      borderRadius: 12, overflow: 'hidden',
+      border: '1px solid rgba(204,0,0,0.25)',
+      boxShadow: '0 0 30px rgba(204,0,0,0.08), 0 8px 32px rgba(0,0,0,0.5)',
+      background: '#090D13',
+    }}>
+      {/* Browser chrome */}
+      <div style={{
+        background: '#0a0a0a',
+        borderBottom: '1px solid rgba(255,255,255,0.07)',
+        display: 'flex', alignItems: 'center', gap: 6,
+        padding: '8px 12px',
+      }}>
+        <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#FF5F57', display: 'inline-block' }} />
+        <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#FFBD2E', display: 'inline-block' }} />
+        <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#28CA41', display: 'inline-block' }} />
+        <div style={{
+          flex: 1, marginLeft: 8,
+          background: 'rgba(255,255,255,0.04)',
+          borderRadius: 4, padding: '2px 8px',
+          fontSize: 9, color: '#4b5563', fontFamily: 'monospace',
+        }}>
+          vagosclothes.netlify.app
+        </div>
+        <span style={{ fontSize: 8, color: '#CC0000', fontWeight: 700, border: '1px solid rgba(204,0,0,0.3)', padding: '1px 6px', borderRadius: 10 }}>
+          LIVE
+        </span>
+      </div>
+
+      {/* Ventana de scroll */}
+      <div style={{ height: 300, overflow: 'hidden', position: 'relative' }}>
+        <div className="vagos-scroll-track">
+          <VagosPageSlice />
+          <VagosPageSlice />
+        </div>
+
+        {/* Fade top */}
+        <div style={{
+          position: 'absolute', top: 0, left: 0, right: 0, height: 24,
+          background: 'linear-gradient(to bottom, #090D13, transparent)',
+          pointerEvents: 'none', zIndex: 2,
+        }} />
+        {/* Fade bottom */}
+        <div style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0, height: 50,
+          background: 'linear-gradient(to bottom, transparent, #090D13)',
+          pointerEvents: 'none', zIndex: 2,
+        }} />
       </div>
     </div>
   )
 }
 
+// ── Sección de proyectos ──────────────────────────────────────────────────────
 export default function Projects() {
   return (
     <section id="projects" className="py-32 bg-[#0B1120] relative overflow-hidden">
@@ -81,6 +199,7 @@ export default function Projects() {
       />
 
       <div className="max-w-7xl mx-auto px-6">
+        {/* Label */}
         <motion.div
           variants={reveal}
           initial="hidden"
@@ -105,7 +224,8 @@ export default function Projects() {
         </motion.h2>
 
         <div className="grid sm:grid-cols-2 gap-5">
-          {/* Vagos Clothes */}
+
+          {/* ── Tarjeta: Vagos Clothes ── */}
           <motion.div
             variants={reveal}
             initial="hidden"
@@ -119,50 +239,90 @@ export default function Projects() {
               style={{ background: 'radial-gradient(circle at 50% 0%, rgba(62,207,142,0.05) 0%, transparent 70%)' }}
             />
 
-            <div className="mb-6 relative z-10">
-              <VagosMockup />
+            {/* Header del proyecto */}
+            <div className="relative z-10 mb-4">
+              <div className="flex items-start justify-between mb-1">
+                <h3 className="text-2xl font-black text-white tracking-tight">Vagos Clothes</h3>
+                <span
+                  className="text-[9px] font-bold px-2 py-0.5 rounded-full mt-1"
+                  style={{ background: 'rgba(62,207,142,0.1)', color: '#3ECF8E', border: '1px solid rgba(62,207,142,0.2)' }}
+                >
+                  Live
+                </span>
+              </div>
+              <p className="text-slate-500 text-xs font-medium tracking-wide">E-commerce · Moda Urbana</p>
             </div>
 
-            <div className="flex-1 relative z-10">
-              <h3 className="text-2xl font-black text-white mb-1 tracking-tight">Vagos Clothes</h3>
-              <p className="text-slate-500 text-xs font-medium tracking-wide mb-4">Tienda de ropa urbana</p>
-              <p className="text-slate-400 text-[14px] leading-relaxed mb-6">
-                E-commerce de moda urbana con catálogo de productos, integración con Supabase y despliegue en
-                Netlify. Diseño responsivo con cabeceras de seguridad HTTP optimizadas.
-              </p>
-              <div className="flex flex-wrap gap-2 mb-7">
-                {[
-                  { label: 'HTML', color: '#E34F26' },
-                  { label: 'CSS', color: '#1572B6' },
-                  { label: 'JavaScript', color: '#F7DF1E' },
-                  { label: 'Supabase', color: '#3ECF8E' },
-                  { label: 'Netlify', color: '#00C7B7' },
-                ].map(({ label, color }) => (
-                  <span
-                    key={label}
-                    className="text-[10px] font-semibold px-3 py-1 rounded-full"
-                    style={{ background: `${color}14`, color, border: `1px solid ${color}30` }}
-                  >
-                    {label}
-                  </span>
-                ))}
+            {/* Problema → Solución */}
+            <div className="grid grid-cols-2 gap-2.5 mb-5 relative z-10">
+              <div
+                className="rounded-lg px-3 py-2.5"
+                style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.12)' }}
+              >
+                <p className="text-[9px] text-red-400/60 uppercase tracking-wider mb-1 font-semibold">Problema</p>
+                <p className="text-[11px] text-slate-300 font-medium leading-tight">Tienda sin presencia digital</p>
+              </div>
+              <div
+                className="rounded-lg px-3 py-2.5"
+                style={{ background: 'rgba(62,207,142,0.06)', border: '1px solid rgba(62,207,142,0.12)' }}
+              >
+                <p className="text-[9px] text-[#3ECF8E]/60 uppercase tracking-wider mb-1 font-semibold">Solución</p>
+                <p className="text-[11px] text-slate-300 font-medium leading-tight">E-commerce con catálogo online</p>
               </div>
             </div>
 
-            <a
-              href="https://vagosclothes.netlify.app/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="relative z-10 inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-full
-                text-[#050816] bg-[#3ECF8E] hover:shadow-[0_0_24px_rgba(62,207,142,0.45)]
-                hover:scale-105 transition-all duration-300 w-fit"
-            >
-              <ExternalLink size={14} />
-              Ver sitio
-            </a>
+            {/* Corredor auto-scroll de la página real */}
+            <div className="mb-6 relative z-10">
+              <VagosScrollDemo />
+            </div>
+
+            {/* Tech stack */}
+            <div className="flex flex-wrap gap-2 mb-6 relative z-10">
+              {[
+                { label: 'HTML',       color: '#E34F26' },
+                { label: 'CSS',        color: '#1572B6' },
+                { label: 'JavaScript', color: '#F7DF1E' },
+                { label: 'Supabase',   color: '#3ECF8E' },
+                { label: 'Netlify',    color: '#00C7B7' },
+              ].map(({ label, color }) => (
+                <span
+                  key={label}
+                  className="text-[10px] font-semibold px-3 py-1 rounded-full"
+                  style={{ background: `${color}14`, color, border: `1px solid ${color}30` }}
+                >
+                  {label}
+                </span>
+              ))}
+            </div>
+
+            {/* Botones */}
+            <div className="flex gap-3 relative z-10 mt-auto">
+              <a
+                href="https://vagosclothes.netlify.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-full
+                  text-[#050816] bg-[#3ECF8E] hover:shadow-[0_0_24px_rgba(62,207,142,0.45)]
+                  hover:scale-105 transition-all duration-300"
+              >
+                <ExternalLink size={14} />
+                Ver sitio
+              </a>
+              <a
+                href="https://github.com/IrvinChavez"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-full
+                  border border-white/15 text-slate-300 hover:text-white hover:border-white/30
+                  hover:bg-white/[0.04] transition-all duration-200"
+              >
+                <Github size={14} />
+                GitHub
+              </a>
+            </div>
           </motion.div>
 
-          {/* Próximamente */}
+          {/* ── Tarjeta: Próximamente ── */}
           <motion.div
             variants={reveal}
             initial="hidden"

@@ -34,6 +34,8 @@ const SOCIALS = [
   },
 ]
 
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xqevqynp'
+
 function InputField({ label, type = 'text', name, value, onChange, placeholder, required }) {
   return (
     <div className="flex flex-col gap-1.5">
@@ -55,34 +57,71 @@ function InputField({ label, type = 'text', name, value, onChange, placeholder, 
   )
 }
 
+// Validación simple en cliente
+function validate(form) {
+  if (!form.name.trim())    return 'El nombre es requerido.'
+  if (!form.email.trim())   return 'El email es requerido.'
+  if (!/\S+@\S+\.\S+/.test(form.email)) return 'Ingresa un email válido.'
+  if (!form.message.trim()) return 'El mensaje no puede estar vacío.'
+  return null
+}
+
 const INITIAL_FORM = { name: '', email: '', company: '', budget: '', message: '' }
 
 export default function Contact() {
-  const [form, setForm] = useState(INITIAL_FORM)
-  const [status, setStatus] = useState('idle')
+  const [form,       setForm]       = useState(INITIAL_FORM)
+  const [status,     setStatus]     = useState('idle')   // idle | loading | success | error
+  const [errorMsg,   setErrorMsg]   = useState('')
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  const handleSubmit = (e) => {
+  // CAMBIO 4: envío real vía Formspree (fetch + JSON)
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    setStatus('loading')
 
-    setTimeout(() => {
-      const subject = encodeURIComponent(`Consulta de Portafolio — ${form.name}`)
-      const body = encodeURIComponent(
-        `Nombre: ${form.name}\nEmail: ${form.email}\nEmpresa: ${form.company || 'N/A'}\nPresupuesto: ${form.budget || 'No especificado'}\n\nMensaje:\n${form.message}`
-      )
-      window.open(`mailto:ChavezIrvin942@gmail.com?subject=${subject}&body=${body}`, '_blank')
-      setStatus('success')
-      setForm(INITIAL_FORM)
-    }, 600)
+    const validationError = validate(form)
+    if (validationError) {
+      setErrorMsg(validationError)
+      setStatus('error')
+      return
+    }
+
+    setStatus('loading')
+    setErrorMsg('')
+
+    try {
+      const res = await fetch(FORMSPREE_ENDPOINT, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          name:    form.name,
+          email:   form.email,
+          company: form.company || 'N/A',
+          budget:  form.budget  || 'No especificado',
+          message: form.message,
+        }),
+      })
+
+      if (res.ok) {
+        setStatus('success')
+        setForm(INITIAL_FORM)
+      } else {
+        // Formspree devuelve detalles de error en JSON
+        const data = await res.json()
+        setErrorMsg(data?.errors?.[0]?.message || 'Error al enviar. Intenta de nuevo.')
+        setStatus('error')
+      }
+    } catch {
+      setErrorMsg('Sin conexión. Contáctame directamente por email o WhatsApp.')
+      setStatus('error')
+    }
   }
 
   const reveal = {
     hidden: { opacity: 0, y: 32 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] } },
+    show:   { opacity: 1, y: 0, transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] } },
   }
 
   return (
@@ -111,6 +150,7 @@ export default function Contact() {
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-16 items-start">
+          {/* Columna izquierda */}
           <motion.div
             variants={reveal}
             initial="hidden"
@@ -152,6 +192,7 @@ export default function Contact() {
             </div>
           </motion.div>
 
+          {/* Columna derecha: formulario */}
           <motion.div
             initial={{ opacity: 0, y: 32 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -159,14 +200,17 @@ export default function Contact() {
             transition={{ duration: 0.85, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
           >
             {status === 'success' ? (
+              /* ── Estado de éxito ── */
               <div className="glass-card rounded-2xl p-12 flex flex-col items-center justify-center text-center gap-5 min-h-[400px]">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center"
-                  style={{ background: 'rgba(0,212,255,0.1)', border: '1px solid rgba(0,212,255,0.3)' }}>
+                <div
+                  className="w-16 h-16 rounded-full flex items-center justify-center"
+                  style={{ background: 'rgba(0,212,255,0.1)', border: '1px solid rgba(0,212,255,0.3)' }}
+                >
                   <CheckCircle2 size={32} className="text-[#00D4FF]" />
                 </div>
                 <h3 className="text-2xl font-bold text-white">¡Mensaje enviado!</h3>
                 <p className="text-slate-400 text-sm max-w-xs leading-relaxed">
-                  Tu cliente de correo debería haberse abierto. Te respondo en menos de 24 horas.
+                  Recibí tu mensaje y te responderé en menos de 24 horas. ¡Gracias por escribir!
                 </p>
                 <button
                   onClick={() => setStatus('idle')}
@@ -176,7 +220,8 @@ export default function Contact() {
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="glass-card rounded-2xl p-8 space-y-5">
+              /* ── Formulario ── */
+              <form onSubmit={handleSubmit} noValidate className="glass-card rounded-2xl p-8 space-y-5">
                 <div className="grid sm:grid-cols-2 gap-5">
                   <InputField
                     label="Nombre completo"
@@ -205,6 +250,7 @@ export default function Contact() {
                   placeholder="Mi Empresa S.A. (opcional)"
                 />
 
+                {/* Selector de presupuesto */}
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-semibold text-slate-400 tracking-wide">
                     Rango de presupuesto
@@ -227,6 +273,7 @@ export default function Contact() {
                   </div>
                 </div>
 
+                {/* Textarea */}
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-semibold text-slate-400 tracking-wide">
                     Mensaje <span className="text-[#00D4FF]">*</span>
@@ -244,17 +291,23 @@ export default function Contact() {
                   />
                 </div>
 
+                {/* Mensaje de error */}
                 {status === 'error' && (
-                  <div className="flex items-center gap-2 text-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-lg px-4 py-2.5">
+                  <motion.div
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex items-center gap-2 text-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-lg px-4 py-2.5"
+                  >
                     <AlertCircle size={14} />
-                    Algo salió mal. Intenta contactarme directamente.
-                  </div>
+                    {errorMsg || 'Algo salió mal. Intenta contactarme directamente.'}
+                  </motion.div>
                 )}
 
+                {/* Botón submit con loading state */}
                 <motion.button
                   type="submit"
                   disabled={status === 'loading'}
-                  whileHover={{ scale: 1.02 }}
+                  whileHover={{ scale: status === 'loading' ? 1 : 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className="w-full flex items-center justify-center gap-2.5 py-4 text-sm font-bold
                     text-[#050816] bg-[#00D4FF] rounded-xl disabled:opacity-70 disabled:cursor-not-allowed
@@ -263,7 +316,7 @@ export default function Contact() {
                   {status === 'loading' ? (
                     <span className="flex items-center gap-2">
                       <span className="w-4 h-4 border-2 border-[#050816]/30 border-t-[#050816] rounded-full animate-spin" />
-                      Preparando...
+                      Enviando...
                     </span>
                   ) : (
                     <>
@@ -272,6 +325,11 @@ export default function Contact() {
                     </>
                   )}
                 </motion.button>
+
+                {/* Nota sobre Formspree (para dev — eliminar en producción si quieres) */}
+                <p className="text-center text-[10px] text-slate-700">
+                  Formulario seguro vía Formspree · Sin spam
+                </p>
               </form>
             )}
           </motion.div>

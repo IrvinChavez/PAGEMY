@@ -2,39 +2,50 @@ import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowDown, ExternalLink } from 'lucide-react'
 
+// ── CAMBIO 6: ParticleCanvas optimizado para móvil ───────────────────────────
+// Desktop → hasta 90 partículas, CONNECT_DIST 130
+// Mobile  → máx 22 partículas, CONNECT_DIST 70, sin repulsión de ratón
 function ParticleCanvas() {
   const canvasRef = useRef(null)
-  const rafRef = useRef(null)
-  const mouseRef = useRef({ x: -1000, y: -1000 })
+  const rafRef    = useRef(null)
+  const mouseRef  = useRef({ x: -1000, y: -1000 })
 
   useEffect(() => {
     const canvas = canvasRef.current
-    const ctx = canvas.getContext('2d')
+    const ctx    = canvas.getContext('2d')
 
     const resize = () => {
-      canvas.width = window.innerWidth
+      canvas.width  = window.innerWidth
       canvas.height = window.innerHeight
     }
     resize()
 
+    // Detectar móvil una sola vez al montar
+    const isMobile = window.innerWidth < 768
+
     const onResize = () => resize()
-    const onMouse = (e) => { mouseRef.current = { x: e.clientX, y: e.clientY } }
+    const onMouse  = (e) => { mouseRef.current = { x: e.clientX, y: e.clientY } }
 
     window.addEventListener('resize', onResize, { passive: true })
-    window.addEventListener('mousemove', onMouse, { passive: true })
+    // El evento mousemove solo es útil en desktop
+    if (!isMobile) window.addEventListener('mousemove', onMouse, { passive: true })
 
-    const count = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 11000), 90)
+    // Cantidad de partículas según dispositivo
+    const rawCount  = Math.floor((canvas.width * canvas.height) / (isMobile ? 15000 : 11000))
+    const count     = Math.min(rawCount, isMobile ? 22 : 90)
+
+    // Distancias reducidas en móvil → menos líneas → menos cómputo O(n²)
+    const CONNECT_DIST = isMobile ? 70  : 130
+    const REPEL_DIST   = isMobile ? 0   : 110   // 0 = repulsión deshabilitada
+
     const particles = Array.from({ length: count }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
+      x:  Math.random() * canvas.width,
+      y:  Math.random() * canvas.height,
       vx: (Math.random() - 0.5) * 0.45,
       vy: (Math.random() - 0.5) * 0.45,
-      r: Math.random() * 1.6 + 0.4,
-      a: Math.random() * 0.45 + 0.15,
+      r:  Math.random() * 1.6 + 0.4,
+      a:  Math.random() * 0.45 + 0.15,
     }))
-
-    const CONNECT_DIST = 130
-    const REPEL_DIST = 110
 
     const tick = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -43,13 +54,16 @@ function ParticleCanvas() {
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i]
 
-        const dx = p.x - mx
-        const dy = p.y - my
-        const dist = Math.sqrt(dx * dx + dy * dy)
-        if (dist < REPEL_DIST && dist > 0) {
-          const f = ((REPEL_DIST - dist) / REPEL_DIST) * 0.7
-          p.vx += (dx / dist) * f
-          p.vy += (dy / dist) * f
+        // Repulsión del cursor (solo desktop, REPEL_DIST > 0)
+        if (REPEL_DIST > 0) {
+          const dx   = p.x - mx
+          const dy   = p.y - my
+          const dist = Math.sqrt(dx * dx + dy * dy)
+          if (dist < REPEL_DIST && dist > 0) {
+            const f = ((REPEL_DIST - dist) / REPEL_DIST) * 0.7
+            p.vx += (dx / dist) * f
+            p.vy += (dy / dist) * f
+          }
         }
 
         p.vx *= 0.985
@@ -60,9 +74,9 @@ function ParticleCanvas() {
         p.x += p.vx
         p.y += p.vy
 
-        if (p.x < 0) p.x = canvas.width
-        if (p.x > canvas.width) p.x = 0
-        if (p.y < 0) p.y = canvas.height
+        if (p.x < 0)             p.x = canvas.width
+        if (p.x > canvas.width)  p.x = 0
+        if (p.y < 0)             p.y = canvas.height
         if (p.y > canvas.height) p.y = 0
 
         ctx.beginPath()
@@ -70,18 +84,19 @@ function ParticleCanvas() {
         ctx.fillStyle = `rgba(0,212,255,${p.a})`
         ctx.fill()
 
+        // Conexiones entre partículas cercanas
         for (let j = i + 1; j < particles.length; j++) {
-          const q = particles[j]
+          const q   = particles[j]
           const cdx = p.x - q.x
           const cdy = p.y - q.y
-          const cd = Math.sqrt(cdx * cdx + cdy * cdy)
+          const cd  = Math.sqrt(cdx * cdx + cdy * cdy)
           if (cd < CONNECT_DIST) {
             const alpha = (1 - cd / CONNECT_DIST) * 0.22
             ctx.beginPath()
             ctx.moveTo(p.x, p.y)
             ctx.lineTo(q.x, q.y)
             ctx.strokeStyle = `rgba(0,212,255,${alpha})`
-            ctx.lineWidth = 0.6
+            ctx.lineWidth   = 0.6
             ctx.stroke()
           }
         }
@@ -95,7 +110,7 @@ function ParticleCanvas() {
     return () => {
       cancelAnimationFrame(rafRef.current)
       window.removeEventListener('resize', onResize)
-      window.removeEventListener('mousemove', onMouse)
+      if (!isMobile) window.removeEventListener('mousemove', onMouse)
     }
   }, [])
 
@@ -108,6 +123,7 @@ function ParticleCanvas() {
   )
 }
 
+// ── Animaciones ───────────────────────────────────────────────────────────────
 const stagger = {
   hidden: {},
   show: { transition: { staggerChildren: 0.11, delayChildren: 0.25 } },
@@ -115,9 +131,10 @@ const stagger = {
 
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] } },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] } },
 }
 
+// ── Hero ──────────────────────────────────────────────────────────────────────
 export default function Hero() {
   return (
     <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#050816]">
