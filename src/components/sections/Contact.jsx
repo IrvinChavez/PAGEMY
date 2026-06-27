@@ -34,7 +34,7 @@ const SOCIALS = [
   },
 ]
 
-const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xqevqynp'
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xqevqnyp'
 
 function InputField({ label, type = 'text', name, value, onChange, placeholder, required }) {
   return (
