@@ -1,0 +1,30 @@
+[build]
+  publish = "dist"
+  command = "npm run build"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Prevent page from being embedded in iframes (clickjacking)
+    X-Frame-Options = "DENY"
+
+    # Prevent browsers from MIME-sniffing the content type
+    X-Content-Type-Options = "nosniff"
+
+    # Control referrer info sent to external sites
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+    # Enforce HTTPS for 1 year, include subdomains
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+
+    # Disable unused browser features
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
+
+    # Content Security Policy:
+    # - Scripts: only from this domain (Vite bundles everything to /assets/)
+    # - Styles: self + Google Fonts CSS + unsafe-inline (required by Framer Motion)
+    # - Fonts: only from Google Fonts CDN
+    # - Connections: only to Formspree for the contact form
+    # - Images: self + data: URIs (used by CSS noise texture)
+    # - No plugins (Flash, etc.), no base tag injection, no framing, form posts only to Formspree
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://formspree.io; img-src 'self' data:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self' https://formspree.io"
