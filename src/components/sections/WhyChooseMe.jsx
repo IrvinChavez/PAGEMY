@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { Layers, Sparkles, TrendingUp, Users, Clock, ShieldCheck } from 'lucide-react'
+import FeatureCard from '../ui/FeatureCard'
 
 const REASONS = [
   {
@@ -45,40 +46,6 @@ const reveal = {
   show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
 }
 
-function ReasonCard({ icon: Icon, title, desc, color, index }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 32 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.7, delay: index * 0.07, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -5 }}
-      className="group glass-card rounded-2xl p-7 relative overflow-hidden cursor-default
-        hover:border-white/15 transition-all duration-400"
-    >
-      <div
-        className="absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-        style={{ background: `radial-gradient(circle at 10% 10%, ${color}0e 0%, transparent 60%)` }}
-      />
-
-      <div
-        className="w-11 h-11 rounded-xl flex items-center justify-center mb-5"
-        style={{ background: `${color}18`, border: `1px solid ${color}28` }}
-      >
-        <Icon size={20} style={{ color }} />
-      </div>
-
-      <h3 className="text-base font-bold text-white mb-2">{title}</h3>
-      <p className="text-slate-500 text-sm leading-relaxed">{desc}</p>
-
-      <div
-        className="absolute top-0 right-0 w-16 h-16 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-        style={{ background: `radial-gradient(circle at 100% 0%, ${color}20, transparent 70%)` }}
-      />
-    </motion.div>
-  )
-}
-
 export default function WhyChooseMe() {
   return (
     <section className="py-32 bg-[#050816] relative overflow-hidden">
@@ -101,31 +68,29 @@ export default function WhyChooseMe() {
           </span>
         </motion.div>
 
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
-          <motion.h2
-            variants={reveal}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            className="text-4xl sm:text-5xl font-black tracking-tight"
-          >
-            Por qué los clientes <span className="gradient-text">me eligen.</span>
-          </motion.h2>
+        <motion.h2
+          variants={reveal}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          className="text-4xl sm:text-5xl font-black tracking-tight mb-4"
+        >
+          Por qué los clientes <span className="gradient-text">me eligen.</span>
+        </motion.h2>
 
-          <motion.p
-            variants={reveal}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            className="text-slate-500 max-w-sm text-sm leading-relaxed md:text-right"
-          >
-            La diferencia entre un desarrollador que entrega código y uno que resuelve problemas.
-          </motion.p>
-        </div>
+        <motion.p
+          variants={reveal}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          className="text-slate-400 text-lg mb-14 max-w-xl"
+        >
+          La diferencia entre un desarrollador que entrega código y uno que resuelve problemas.
+        </motion.p>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {REASONS.map((r, i) => (
-            <ReasonCard key={r.title} {...r} index={i} />
+            <FeatureCard key={r.title} {...r} index={i} />
           ))}
         </div>
       </div>

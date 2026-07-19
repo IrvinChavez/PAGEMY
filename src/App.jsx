@@ -1,6 +1,7 @@
 import Navbar      from './components/layout/Navbar'
 import Footer      from './components/layout/Footer'
 import Hero        from './components/sections/Hero'
+import ScrollShowcase from './components/sections/ScrollShowcase'
 import About       from './components/sections/About'
 import TechStack   from './components/sections/TechStack'
 import Services    from './components/sections/Services'
@@ -16,6 +17,7 @@ export default function App() {
       <Navbar />
       <main>
         <Hero />
+        <ScrollShowcase />
         <About />
         <TechStack />
         <Services />

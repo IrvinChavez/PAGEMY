@@ -121,7 +121,7 @@ export default function Contact() {
 
   const reveal = {
     hidden: { opacity: 0, y: 32 },
-    show:   { opacity: 1, y: 0, transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] } },
+    show:   { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
   }
 
   return (
@@ -197,7 +197,7 @@ export default function Contact() {
             initial={{ opacity: 0, y: 32 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.85, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
           >
             {status === 'success' ? (
               /* ── Estado de éxito ── */

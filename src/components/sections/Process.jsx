@@ -1,5 +1,10 @@
 import { motion } from 'framer-motion'
 import { Search, Layers, Code2, Rocket } from 'lucide-react'
+import DuotoneParallaxImage from '../ui/DuotoneParallaxImage'
+import FeatureCard from '../ui/FeatureCard'
+
+// PLACEHOLDER — reemplaza con una foto real de tu espacio de trabajo.
+const WORKSPACE_IMAGE = 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1600&auto=format&fit=crop'
 
 // ── CAMBIO 5: Sección "Cómo trabajo" ─────────────────────────────────────────
 const STEPS = [
@@ -38,53 +43,6 @@ const reveal = {
   show:   { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
 }
 
-function StepCard({ number, icon: Icon, title, desc, color, index }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 36 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.75, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -6 }}
-      className="group relative glass-card rounded-2xl p-7 overflow-hidden cursor-default
-        hover:border-white/15 transition-all duration-300"
-    >
-      {/* Glow de fondo al hover */}
-      <div
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-        style={{ background: `radial-gradient(circle at 0% 0%, ${color}12 0%, transparent 65%)` }}
-      />
-
-      {/* Número grande decorativo */}
-      <span
-        className="absolute top-5 right-5 text-5xl font-black leading-none select-none"
-        style={{ color: `${color}12` }}
-      >
-        {number}
-      </span>
-
-      {/* Ícono */}
-      <div
-        className="w-12 h-12 rounded-xl flex items-center justify-center mb-6 relative z-10
-          group-hover:scale-110 transition-transform duration-300"
-        style={{ background: `${color}18`, border: `1px solid ${color}30` }}
-      >
-        <Icon size={22} style={{ color }} />
-      </div>
-
-      {/* Texto */}
-      <h3 className="text-lg font-bold text-white mb-3 relative z-10">{title}</h3>
-      <p className="text-slate-500 text-sm leading-relaxed relative z-10">{desc}</p>
-
-      {/* Línea inferior animada al hover */}
-      <div
-        className="absolute bottom-0 left-0 h-px w-0 group-hover:w-full transition-all duration-500"
-        style={{ background: `linear-gradient(90deg, ${color}, transparent)` }}
-      />
-    </motion.div>
-  )
-}
-
 export default function Process() {
   return (
     <section id="process" className="py-32 bg-[#050816] relative overflow-hidden">
@@ -109,32 +67,36 @@ export default function Process() {
           </span>
         </motion.div>
 
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
-          <motion.h2
-            variants={reveal}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            className="text-4xl sm:text-5xl font-black tracking-tight"
-          >
-            Cómo <span className="gradient-text">trabajo.</span>
-          </motion.h2>
+        <motion.h2
+          variants={reveal}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          className="text-4xl sm:text-5xl font-black tracking-tight mb-4"
+        >
+          Cómo <span className="gradient-text">trabajo.</span>
+        </motion.h2>
 
-          <motion.p
-            variants={reveal}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            className="text-slate-500 max-w-sm text-sm leading-relaxed md:text-right"
-          >
-            Un proceso claro y transparente desde la primera conversación hasta el deploy en producción.
-          </motion.p>
-        </div>
+        <motion.p
+          variants={reveal}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          className="text-slate-400 text-lg mb-14 max-w-xl"
+        >
+          Un proceso claro y transparente desde la primera conversación hasta el deploy en producción.
+        </motion.p>
+
+        <DuotoneParallaxImage
+          src={WORKSPACE_IMAGE}
+          alt="Espacio de trabajo"
+          className="h-56 md:h-72 mb-14"
+        />
 
         {/* Grid de 4 pasos */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {STEPS.map((step, i) => (
-            <StepCard key={step.title} {...step} index={i} />
+            <FeatureCard key={step.title} {...step} index={i} />
           ))}
         </div>
 
@@ -146,7 +108,7 @@ export default function Process() {
           viewport={{ once: true }}
           className="mt-14 text-center"
         >
-          <p className="text-slate-500 text-sm mb-5">
+          <p className="text-slate-400 text-sm mb-5">
             ¿Listo para empezar? El paso 01 comienza con una llamada sin compromiso.
           </p>
           <button

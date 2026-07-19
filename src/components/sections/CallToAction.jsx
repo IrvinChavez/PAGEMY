@@ -1,10 +1,24 @@
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
+import DuotoneParallaxImage from '../ui/DuotoneParallaxImage'
+
+// PLACEHOLDER — reemplaza con una imagen atmosférica de tu elección.
+const ATMOSPHERE_IMAGE = 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop'
 
 export default function CallToAction() {
   return (
     <section className="py-32 relative overflow-hidden">
       <div className="absolute inset-0 bg-[#0B1120]" />
+      <div className="absolute inset-0">
+        <DuotoneParallaxImage
+          src={ATMOSPHERE_IMAGE}
+          alt=""
+          variant="background"
+          rounded="rounded-none"
+          imageOpacity={0.22}
+          className="w-full h-full"
+        />
+      </div>
       <div
         className="absolute inset-0"
         style={{
@@ -33,7 +47,7 @@ export default function CallToAction() {
           initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
           <p className="text-[11px] font-semibold tracking-[0.22em] uppercase text-[#00D4FF] mb-6">
             Trabajemos juntos
@@ -62,7 +76,7 @@ export default function CallToAction() {
             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-200" />
           </motion.button>
 
-          <p className="mt-6 text-xs text-slate-600">
+          <p className="mt-6 text-xs text-slate-400">
             Sin compromisos. Solo una conversación.
           </p>
         </motion.div>
